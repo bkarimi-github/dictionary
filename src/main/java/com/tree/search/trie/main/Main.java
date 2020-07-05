@@ -27,14 +27,9 @@ public class Main {
 //        System.out.println(TRIE_DICTIONARY.print());
 //
 //
-//        trie.insert("cat");
-//        System.out.println(trie.toString());
-//
-//        trie.insert("can");
-//        System.out.println(trie.toString());
-//
-//        trie.insert("burha");
-//        System.out.println(trie.toString());
+//        TRIE_DICTIONARY.delete("burhan");
+//        TRIE_DICTIONARY.delete("burhan");
+//        System.out.println(TRIE_DICTIONARY.print());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while(true)

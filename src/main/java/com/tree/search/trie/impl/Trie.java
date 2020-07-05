@@ -81,7 +81,7 @@ public class Trie implements Dictionary {
 
     public boolean delete(String word) {
         TrieNode deletedNode = ROOT.delete(word);
-        if(deletedNode != null && deletedNode.isWord()) {
+        if(deletedNode != null) {
             return true;
         }
         return false;

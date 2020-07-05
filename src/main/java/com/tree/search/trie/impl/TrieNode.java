@@ -151,7 +151,42 @@ public class TrieNode implements Node {
     }
 
     public TrieNode delete(String word){
-        return null;
+        TrieNode nodeToDelete = this.find(word);
+        if(nodeToDelete == null)
+        {
+            return null;
+        }
+        // handle in case of to be deleted node as a leaf node
+        else if(nodeToDelete.getChildren().size() == 0) {
+            // handle deletion
+            // delete the node
+            // remove it as a child from it's parent
+            // if the node's parent is not a word and only has one child after deletion
+            // combine the node's parent with the only remaining child
+            TrieNode parentOfNodeToDelete = nodeToDelete.parent;
+            parentOfNodeToDelete.getChildren().remove(nodeToDelete);
+            if (!parentOfNodeToDelete.isWord && parentOfNodeToDelete.getChildren().size() == 1) {
+                // Get the only child
+                TrieNode newParent = parentOfNodeToDelete.getChildren().get(0);
+                newParent.name = parentOfNodeToDelete.getName() + newParent.getName();
+                newParent.parent = parentOfNodeToDelete.parent;
+                newParent.parent.getChildren().add(newParent);
+                parentOfNodeToDelete.parent.getChildren().remove(parentOfNodeToDelete);
+            }
+        }
+        else if(nodeToDelete.getChildren().size() == 1) {
+            TrieNode childOfNodeToDelete = nodeToDelete.getChildren().get(0);
+            childOfNodeToDelete.name = nodeToDelete.name + childOfNodeToDelete.name;
+            childOfNodeToDelete.parent = nodeToDelete.parent;
+            childOfNodeToDelete.parent.getChildren().add(childOfNodeToDelete);
+            nodeToDelete.parent.getChildren().remove(nodeToDelete);
+            nodeToDelete.getChildren().remove(childOfNodeToDelete);
+        }
+        else
+        {
+            nodeToDelete.setWord(false);
+        }
+        return nodeToDelete;
     }
 
     private TrieNode split(String newName, boolean isNewNodeAWord)
