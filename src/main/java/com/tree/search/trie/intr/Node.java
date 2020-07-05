@@ -6,5 +6,7 @@ public interface Node {
 
     public Node find(String word);
 
-    public Node delete(String Node);
+    public Node delete(String word);
+
+    public void delete();
 }

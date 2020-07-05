@@ -2,8 +2,11 @@ package com.tree.search.trie.impl;
 
 import com.tree.search.trie.constants.TrieConstants;
 import com.tree.search.trie.intr.Dictionary;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Trie implements Dictionary {
@@ -85,6 +88,12 @@ public class Trie implements Dictionary {
             return true;
         }
         return false;
+    }
+
+    public boolean deleteAll()
+    {
+        ROOT.delete();
+        return true;
     }
 
     public boolean find(String word) {

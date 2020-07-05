@@ -200,6 +200,10 @@ public class TrieNode implements Node {
         return newNode;
     }
 
+    @Override
+    public void delete() {
+        this.children = (List<TrieNode>) CollectionUtils.removeAll(getChildren(), getChildren());
+    }
 
     public boolean isRootNode()
     {

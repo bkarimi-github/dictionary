@@ -41,7 +41,7 @@ public class Main {
 
     public static void displayMenu(BufferedReader bufferedReader) throws IOException
     {
-        System.out.println("Options:\n1. Enter a Word\n2. Find a Word\n3. Delete a Word\n4. Print Tree\n5. Exit");
+        System.out.println("Options:\n1. Enter a Word\n2. Find a Word\n3. Delete a Word\n4. Delete All Words\n5. Print Tree\n6. Exit");
         String choice = bufferedReader.readLine();
         switch (choice){
             case "1":
@@ -69,10 +69,17 @@ public class Main {
                     System.out.println("Deletion failed");
                 break;
             case "4":
+                boolean allDeleted = TRIE_DICTIONARY.deleteAll();
+                if(allDeleted)
+                    System.out.println("All Words Deleted");
+                else
+                    System.out.println("Deletion failed");
+                break;
+            case "5":
                 System.out.println("Tree Structure:\n");
                 System.out.println(TRIE_DICTIONARY.print());
                 break;
-            case "5":
+            case "6":
                 System.exit(0);
         }
 
