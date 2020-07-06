@@ -36,15 +36,7 @@ public class TrieNode implements Node {
     {
         if(this.isRootNode())
         {
-            TrieNode childDelegate = TrieNodeHelper.findChildDelegateFor(this, word);
-            if(childDelegate != null)
-            {
-                childDelegate.insert(word);
-            }
-            else
-            {
-                createNode(word, this);
-            }
+            delegateInsertion(word);
         }
         else
         {
@@ -68,15 +60,7 @@ public class TrieNode implements Node {
             {
                 // delegate the insertion to child delegate
                 word = word.substring(name.length());
-                TrieNode childDelegate = TrieNodeHelper.findChildDelegateFor(this, word);
-                if(childDelegate != null)
-                {
-                    childDelegate.insert(word);
-                }
-                else
-                {
-                    createNode(word, this);
-                }
+                delegateInsertion(word);
             }
 
             // if word is partially contained within the node name
@@ -98,7 +82,7 @@ public class TrieNode implements Node {
                 String splitName = name.substring(0, matchedChars);
                 TrieNode splittedNode = split(splitName, false);
                 String remainingWord = word.substring(matchedChars);
-                TrieNode remainingWordNode = createNode(remainingWord, splittedNode);
+                createNode(remainingWord, splittedNode);
                 return;
             }
         }
@@ -156,8 +140,10 @@ public class TrieNode implements Node {
         {
             return null;
         }
+
+        nodeToDelete.setWord(false);
         // handle in case of to be deleted node as a leaf node
-        else if(nodeToDelete.getChildren().size() == 0) {
+        if(nodeToDelete.getChildren().size() == 0) {
             // handle deletion
             // delete the node
             // remove it as a child from it's parent
@@ -165,22 +151,10 @@ public class TrieNode implements Node {
             // combine the node's parent with the only remaining child
             TrieNode parentOfNodeToDelete = nodeToDelete.parent;
             parentOfNodeToDelete.getChildren().remove(nodeToDelete);
-            if (!parentOfNodeToDelete.isWord && parentOfNodeToDelete.getChildren().size() == 1) {
-                // Get the only child
-                TrieNode newParent = parentOfNodeToDelete.getChildren().get(0);
-                newParent.name = parentOfNodeToDelete.getName() + newParent.getName();
-                newParent.parent = parentOfNodeToDelete.parent;
-                newParent.parent.getChildren().add(newParent);
-                parentOfNodeToDelete.parent.getChildren().remove(parentOfNodeToDelete);
-            }
+            handleMerge(parentOfNodeToDelete);
         }
         else if(nodeToDelete.getChildren().size() == 1) {
-            TrieNode childOfNodeToDelete = nodeToDelete.getChildren().get(0);
-            childOfNodeToDelete.name = nodeToDelete.name + childOfNodeToDelete.name;
-            childOfNodeToDelete.parent = nodeToDelete.parent;
-            childOfNodeToDelete.parent.getChildren().add(childOfNodeToDelete);
-            nodeToDelete.parent.getChildren().remove(nodeToDelete);
-            nodeToDelete.getChildren().remove(childOfNodeToDelete);
+            handleMerge(nodeToDelete);
         }
         else
         {
@@ -189,13 +163,43 @@ public class TrieNode implements Node {
         return nodeToDelete;
     }
 
+    private void delegateInsertion(String word)
+    {
+        TrieNode childDelegate = TrieNodeHelper.findChildDelegateFor(this, word);
+        if(childDelegate != null)
+        {
+            childDelegate.insert(word);
+        }
+        else
+        {
+            createNode(word, this);
+        }
+    }
+
+    private void handleMerge(TrieNode node)
+    {
+        if(!node.isRootNode() && !node.isWord && node.getChildren().size() == 1){
+            TrieNode newParent = node.getChildren().get(0);
+            newParent.name = node.getName() + newParent.getName();
+            newParent.parent = node.parent;
+            newParent.parent.getChildren().add(newParent);
+            node.parent.getChildren().remove(node);
+            node.getChildren().remove(newParent);
+        }
+
+    }
+
     private TrieNode split(String newName, boolean isNewNodeAWord)
     {
+        // adjust the names of new and existing nodes
         TrieNode newNode = createNode(newName, this.parent);
         this.name = this.name.substring(newName.length());
+
+        // adjust the parents of new and existing nodes
         this.parent.getChildren().remove(this);
         newNode.getChildren().add(this);
         this.parent = newNode;
+
         newNode.setWord(isNewNodeAWord);
         return newNode;
     }
