@@ -5,17 +5,26 @@ import com.tree.search.trie.intr.Dictionary;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class Trie implements Dictionary {
 
+    private static Trie TRIE_INSTANCE = new Trie();
+
     public static TrieNode ROOT = new TrieNode(TrieConstants.ROOT_NODE_NAME, null);
+    public static int count = 0;
+
+    public static Trie getInstance(){
+        return TRIE_INSTANCE;
+    }
 
     public void insert(String word)
     {
-        ROOT.insert(word.toLowerCase().trim().replace(" ", "-"));
+        ROOT.insert(word.toLowerCase().trim());
+        ++count;
     }
 
     public String print()
@@ -83,7 +92,7 @@ public class Trie implements Dictionary {
     }
 
     public boolean delete(String word) {
-        TrieNode deletedNode = ROOT.delete(word);
+        TrieNode deletedNode = ROOT.delete(word.toLowerCase().trim());
         if(deletedNode != null) {
             return true;
         }
@@ -97,11 +106,33 @@ public class Trie implements Dictionary {
     }
 
     public boolean find(String word) {
-        TrieNode foundNode = ROOT.find(word);
+        TrieNode foundNode = ROOT.find(word.toLowerCase().trim());
         if(foundNode != null && foundNode.isWord()) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void insert(File file) {
+        if(file == null || file.exists() == false)
+        {
+            return;
+        }
+
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+            br.lines().forEach(word -> insert(word));
+        }
+        catch(IOException e)
+        { }
+        finally {
+            try {
+                br.close();
+            }
+            catch(IOException e){}
+        }
     }
 
     @Override

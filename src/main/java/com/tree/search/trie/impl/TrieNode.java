@@ -19,12 +19,6 @@ public class TrieNode implements Node {
     private List<TrieNode> children;
     private boolean isWord;
 
-
-    public TrieNode(String name)
-    {
-        this.name = name;
-    }
-
     public TrieNode(String name, TrieNode parent)
     {
         this.name = name;
@@ -126,11 +120,10 @@ public class TrieNode implements Node {
                     return null;
                 }
             }
-            else{
+            else {
                 return null;
             }
         }
-
         return foundNode;
     }
 
@@ -161,6 +154,11 @@ public class TrieNode implements Node {
             nodeToDelete.setWord(false);
         }
         return nodeToDelete;
+    }
+
+    @Override
+    public void delete() {
+        this.children = (List<TrieNode>) CollectionUtils.removeAll(getChildren(), getChildren());
     }
 
     private void delegateInsertion(String word)
@@ -202,11 +200,6 @@ public class TrieNode implements Node {
 
         newNode.setWord(isNewNodeAWord);
         return newNode;
-    }
-
-    @Override
-    public void delete() {
-        this.children = (List<TrieNode>) CollectionUtils.removeAll(getChildren(), getChildren());
     }
 
     public boolean isRootNode()

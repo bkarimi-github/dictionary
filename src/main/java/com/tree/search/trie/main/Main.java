@@ -1,12 +1,13 @@
 package com.tree.search.trie.main;
 
+import com.tree.search.trie.impl.FileImporterThread;
 import com.tree.search.trie.impl.Trie;
 
 import java.io.*;
 
 public class Main {
 
-    private static Trie TRIE_DICTIONARY = new Trie();
+    private static Trie TRIE_DICTIONARY = Trie.getInstance();
 
     public static void main(String[] args) throws IOException
     {
@@ -30,6 +31,11 @@ public class Main {
 //        TRIE_DICTIONARY.delete("burhan");
 //        TRIE_DICTIONARY.delete("burhan");
 //        System.out.println(TRIE_DICTIONARY.print());
+
+        Thread fileImporterThread = new FileImporterThread("FileImporterThread");
+        fileImporterThread.start();
+
+        System.out.println(Thread.currentThread().getName() + " " + Thread.currentThread().getId());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while(true)
